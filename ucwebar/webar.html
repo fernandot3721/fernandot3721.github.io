@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>web ar测试</title>
+<script>
+function init()
+{
+    const EVENT_DETECTOR_INIT_RESULT = 1;
+    const EVENT_DETECT_RESULT = 2;
+    // init ARSession
+    var arSession = ucweb.ARSession;
+    var detector = arSession.setDetector("ExampleDetector");
+    detector.setMarkers(['deault']); // hardcode
+    arSession.addEventListener(EVENT_DETECTOR_INIT_RESULT, function (code){ // ?
+        var ir = document.getElementById('ir')
+        ir.innerHTML="init result is: " + code;
+        console.log('init resutl is: ' + code);
+    });
+    arSession.addEventListener(EVENT_DETECT_RESULT, function (result){ // ?
+        var dr = document.getElementById('dr')
+        dr.innerHTML="detect result is: " + result;
+        console.log('detect result is: ' + result);
+    });
+
+    MediaStreamTrack.getSources(function(deviceInfos) {
+        var constraints;
+        var flag = false;
+
+        for (var i = 0; i !== deviceInfos.length; ++i) {
+            var deviceInfo = deviceInfos[i];
+            if (deviceInfo.kind === 'video' && deviceInfo.facing === 'environment') {
+                constraints = { video: { mandatory: {sourceId: deviceInfo.id} } };
+                flag = true;
+            }
+        }
+        if (!flag) {
+            constraints = { video: true };
+        }
+
+        var setupFunc = function() {
+            requestAnimationFrame(loop);
+            var task = new Flip.GL.Task({
+                        canvas: canvas,
+                            name: 'gl-task'
+                            });
+            task.add(filter);
+            Flip.instance.add(task);
+            calFPS(Flip.instance);
+        };
+
+        var errorFunc = function(e) {
+            console.log('setup error: ' + e);
+        };
+        arSession.start(constraints, setupFunc, errorFunc);
+    });
+
+
+}
+</script>
+
+<style>
+*{
+padding: 0;
+margin: 0;
+}
+body{
+padding: 50px;
+/*background: url(bg.png) 0 0 repeat;*/
+background-color: transparent;
+    color:green;
+}
+h1 {
+    color:green;
+}
+</style>
+</head>
+<body>    
+
+<h1 onclick="init()">init</h1>
+<br/>
+
+<h1 id="ir">initResult</h1>
+<br/>
+
+<h1 id="dr">detectResult</h1>
+<br/>
+
+</body>    
+</html>
