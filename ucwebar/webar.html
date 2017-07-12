@@ -10,8 +10,7 @@ function init()
     const EVENT_DETECT_RESULT = 2;
     // init ARSession
     var arSession = ucweb.ARSession;
-    var detector = arSession.setDetector("ExampleDetector");
-    detector.setMarkers(['deault']); // hardcode
+    
     arSession.addEventListener(EVENT_DETECTOR_INIT_RESULT, function (code){ // ?
         var ir = document.getElementById('ir')
         ir.innerHTML="init result is: " + code;
@@ -22,6 +21,16 @@ function init()
         dr.innerHTML="detect result is: " + result;
         console.log('detect result is: ' + result);
     });
+
+    var startSuccess = function() {
+        console.log('camera success');
+        var detector = arSession.setDetector("ExampleDetector");
+        detector.setMarkers(['deault']); // hardcode
+    };
+
+    var startError = function(e) {
+        console.log('camera error: ' + e);
+    };
 
     MediaStreamTrack.getSources(function(deviceInfos) {
         var constraints;
@@ -37,15 +46,7 @@ function init()
         if (!flag) {
             constraints = { video: true };
         }
-
-        var successFunc = function() {
-            console.log('camera success');
-        };
-
-        var errorFunc = function(e) {
-            console.log('camera error: ' + e);
-        };
-        arSession.start(constraints, successFunc, errorFunc);
+        arSession.start(constraints, startSuccess, startError);
     });
 }
 </script>
