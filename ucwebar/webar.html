@@ -38,24 +38,15 @@ function init()
             constraints = { video: true };
         }
 
-        var setupFunc = function() {
-            requestAnimationFrame(loop);
-            var task = new Flip.GL.Task({
-                        canvas: canvas,
-                            name: 'gl-task'
-                            });
-            task.add(filter);
-            Flip.instance.add(task);
-            calFPS(Flip.instance);
+        var successFunc = function() {
+            console.log('camera success');
         };
 
         var errorFunc = function(e) {
-            console.log('setup error: ' + e);
+            console.log('camera error: ' + e);
         };
-        arSession.start(constraints, setupFunc, errorFunc);
+        arSession.start(constraints, successFunc, errorFunc);
     });
-
-
 }
 </script>
 
