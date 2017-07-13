@@ -12,36 +12,36 @@ function init()
     var arSession = ucweb.ARSession;
     
     arSession.addEventListener(EVENT_DETECTOR_INIT_RESULT, function(code) {
-        let ir = document.getElementById('ir');
+        var ir = document.getElementById('ir');
         ir.innerHTML="init result is: " + code;
         console.log('init resutl is: ' + code);
     });
     arSession.addEventListener(EVENT_DETECT_RESULT, function(result) {
-        let dr = document.getElementById('dr');
+        var dr = document.getElementById('dr');
         dr.innerHTML="detect result is: " + result;
         console.log('detect result is: ' + result);
     });
 
-    let selectDetector = function() {
-        let detector = arSession.setDetector("ExampleDetector");
+    var selectDetector = function() {
+        var detector = arSession.setDetector("ExampleDetector");
         detector.setMarkers(['deault']);
     };
 
-    let startSuccess = function() {
+    var startSuccess = function() {
         console.log('camera success');
         setTimeout(selectDetector, 1000);
     };
 
-    let startError = function(e) {
+    var startError = function(e) {
         console.log('camera error: ' + e);
     };
 
     MediaStreamTrack.getSources(function(deviceInfos) {
-        let constraints;
-        let flag = false;
+        var constraints;
+        var flag = false;
 
-        for (let i = 0; i !== deviceInfos.length; ++i) {
-            let deviceInfo = deviceInfos[i];
+        for (var i = 0; i !== deviceInfos.length; ++i) {
+            var deviceInfo = deviceInfos[i];
             if (deviceInfo.kind === 'video' && deviceInfo.facing === 'environment') {
                 constraints = { video: { mandatory: {sourceId: deviceInfo.id} } };
                 flag = true;
