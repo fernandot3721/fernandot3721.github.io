@@ -9,35 +9,39 @@ function init()
     const EVENT_DETECTOR_INIT_RESULT = "DetectorInitResult";
     const EVENT_DETECT_RESULT = "DetectorResult";
     // init ARSession
-    var arSession = ucweb.ARSession;
+    let arSession = ucweb.ARSession;
     
     arSession.addEventListener(EVENT_DETECTOR_INIT_RESULT, function (code){ // ?
-        var ir = document.getElementById('ir')
+        let ir = document.getElementById('ir')
         ir.innerHTML="init result is: " + code;
         console.log('init resutl is: ' + code);
     });
     arSession.addEventListener(EVENT_DETECT_RESULT, function (result){ // ?
-        var dr = document.getElementById('dr')
+        let dr = document.getElementById('dr')
         dr.innerHTML="detect result is: " + result;
         console.log('detect result is: ' + result);
     });
 
-    var startSuccess = function() {
-        console.log('camera success');
-        var detector = arSession.setDetector("ExampleDetector");
+    let selectDetector = function() {
+        let detector = arSession.setDetector("ExampleDetector");
         detector.setMarkers(['deault']); // hardcode
+    }
+
+    let startSuccess = function() {
+        console.log('camera success');
+        setTimeout(selectDetector, 1000);
     };
 
-    var startError = function(e) {
+    let startError = function(e) {
         console.log('camera error: ' + e);
     };
 
     MediaStreamTrack.getSources(function(deviceInfos) {
-        var constraints;
-        var flag = false;
+        let constraints;
+        let flag = false;
 
-        for (var i = 0; i !== deviceInfos.length; ++i) {
-            var deviceInfo = deviceInfos[i];
+        for (let i = 0; i !== deviceInfos.length; ++i) {
+            let deviceInfo = deviceInfos[i];
             if (deviceInfo.kind === 'video' && deviceInfo.facing === 'environment') {
                 constraints = { video: { mandatory: {sourceId: deviceInfo.id} } };
                 flag = true;
