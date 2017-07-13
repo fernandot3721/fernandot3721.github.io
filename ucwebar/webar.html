@@ -11,12 +11,12 @@ function init()
 
     var arSession = ucweb.ARSession;
     
-    arSession.addEventListener(EVENT_DETECTOR_INIT_RESULT, function (code){ // ?
+    arSession.addEventListener(EVENT_DETECTOR_INIT_RESULT, function(code) {
         let ir = document.getElementById('ir');
         ir.innerHTML="init result is: " + code;
         console.log('init resutl is: ' + code);
     });
-    arSession.addEventListener(EVENT_DETECT_RESULT, function (result){ // ?
+    arSession.addEventListener(EVENT_DETECT_RESULT, function(result) {
         let dr = document.getElementById('dr');
         dr.innerHTML="detect result is: " + result;
         console.log('detect result is: ' + result);
@@ -24,7 +24,7 @@ function init()
 
     let selectDetector = function() {
         let detector = arSession.setDetector("ExampleDetector");
-        detector.setMarkers(['deault']); // hardcode
+        detector.setMarkers(['deault']);
     };
 
     let startSuccess = function() {
