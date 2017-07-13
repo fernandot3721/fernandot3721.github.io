@@ -8,8 +8,8 @@ function init()
 {
     const EVENT_DETECTOR_INIT_RESULT = "DetectorInitResult";
     const EVENT_DETECT_RESULT = "DetectorResult";
-    // init ARSession
-    let arSession = ucweb.ARSession;
+
+    var arSession = ucweb.ARSession;
     
     arSession.addEventListener(EVENT_DETECTOR_INIT_RESULT, function (code){ // ?
         let ir = document.getElementById('ir')
