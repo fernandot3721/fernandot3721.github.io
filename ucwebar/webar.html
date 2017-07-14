@@ -29,7 +29,9 @@ function init()
 
     var startSuccess = function() {
         console.log('camera success');
-        setTimeout(selectDetector, 1000);
+        var detector = arSession.setDetector("ExampleDetector");
+        detector.setMarkers(['deault']);
+        //setTimeout(selectDetector, 1000);
     };
 
     var startError = function(e) {
