@@ -8,19 +8,41 @@ function init()
 {
     const EVENT_DETECTOR_INIT_RESULT = "DetectorInitResult";
     const EVENT_DETECT_RESULT = "DetectorResult";
+    const EVENT_SESSION_START ='SessionStart';
+    const EVENT_SESSION_FAIL ='SessionFail';
+    const EVENT_SESSION_STOP = 'SessionStop';
 
     var arSession = ucweb.ARSession;
     
     arSession.addEventListener(EVENT_DETECTOR_INIT_RESULT, function(code) {
-        var ir = document.getElementById('ir');
-        ir.innerHTML="init result is: " + code;
-        console.log('init resutl is: ' + code);
+        var ir = document.getElementById('di');
+        ir.innerHTML="detector init result is: " + code;
+        console.log('detector init resutl is: ' + code);
     });
     arSession.addEventListener(EVENT_DETECT_RESULT, function(result) {
         var dr = document.getElementById('dr');
         dr.innerHTML="detect result is: " + result;
         console.log('detect result is: ' + result);
     });
+
+    arSession.addEventListener(EVENT_SESSION_START, function(result) {
+        var dr = document.getElementById('si');
+        dr.innerHTML="session result is: success";
+        console.log('session result is: success');
+    });
+
+    arSession.addEventListener(EVENT_SESSION_FAIL, function(result) {
+        var dr = document.getElementById('si');
+        dr.innerHTML="session result is: fail";
+        console.log('session result is: fain');
+    });
+
+    arSession.addEventListener(EVENT_SESSION_STOP, function(result) {
+        var dr = document.getElementById('si');
+        dr.innerHTML="session result is: stop";
+        console.log('session result is: stop');
+    });
+
 
     var selectDetector = function() {
         var detector = arSession.setDetector("ExampleDetector");
@@ -78,7 +100,10 @@ h1 {
 <h1 onclick="init()">init</h1>
 <br/>
 
-<h1 id="ir">initResult</h1>
+<h1 id="si">session initResult</h1>
+<br/>
+
+<h1 id="di">detect initResult</h1>
 <br/>
 
 <h1 id="dr">detectResult</h1>
