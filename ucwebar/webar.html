@@ -29,6 +29,8 @@ function init()
         var dr = document.getElementById('si');
         dr.innerHTML="session result is: success";
         console.log('session result is: success');
+        var detector = arSession.setDetector("ExampleDetector");
+        detector.setMarkers(['deault']);
     });
 
     arSession.addEventListener(EVENT_SESSION_FAIL, function(result) {
@@ -44,22 +46,6 @@ function init()
     });
 
 
-    var selectDetector = function() {
-        var detector = arSession.setDetector("ExampleDetector");
-        detector.setMarkers(['deault']);
-    };
-
-    var startSuccess = function() {
-        console.log('camera success');
-        var detector = arSession.setDetector("ExampleDetector");
-        detector.setMarkers(['deault']);
-        //setTimeout(selectDetector, 1000);
-    };
-
-    var startError = function(e) {
-        console.log('camera error: ' + e);
-    };
-
     MediaStreamTrack.getSources(function(deviceInfos) {
         var constraints;
         var flag = false;
@@ -74,7 +60,7 @@ function init()
         if (!flag) {
             constraints = { video: true };
         }
-        arSession.start(constraints, startSuccess, startError);
+        arSession.start(constraints);
     });
 }
 </script>
