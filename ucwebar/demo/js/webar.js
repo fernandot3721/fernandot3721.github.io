@@ -48,7 +48,7 @@ webpackJsonp([2, 0], [
                 if (canvas.width !== width) {
                     canvas.width = width;
                     canvas.height = height;
-                    var gl = canvas.getContext('webgl');
+                    var gl = canvas.getContext('webgl', {preserveDrawingBuffer: true});
                     gl.viewport(0, 0, width, height);
                 }
             }

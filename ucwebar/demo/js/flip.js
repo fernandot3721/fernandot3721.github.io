@@ -4732,7 +4732,8 @@ webpackJsonp([5,0],[
 	    }
 
 	    GLRenderTask.prototype.init = function init(glOptions) {
-	      _RenderTask.prototype.init.call(this);
+				_RenderTask.prototype.init.call(this);
+				glOptions.preserveDrawingBuffer = true;
 	      var gl = this.gl = this.canvas.getContext('webgl', glOptions) || this.canvas.getContext('experimental-webgl', glOptions);
 	      this._maxTextureIndex = gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
 	      if (!gl) {
