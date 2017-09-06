@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+    <title>Android</title>
+    <script src="./js/common.js"></script>
+    <script src="./js/flip.js"></script>
+    <script>
+
+        const EVENT_DETECTOR_INIT_RESULT = "DetectorInitResult";
+        const EVENT_DETECT_RESULT = "DetectorResult";
+        const EVENT_SESSION_START ='SessionStart';
+        const EVENT_SESSION_FAIL ='SessionFail';
+        const EVENT_SESSION_STOP = 'SessionStop';
+        var arSession = ucweb.ARSession;
+
+        function sessionStart() {
+            console.log("-- session start --");
+            MediaStreamTrack.getSources(function (deviceInfos) {
+                var constraints;
+                var flag = false;
+                for (var i = 0; i !== deviceInfos.length; ++i) {
+                    var deviceInfo = deviceInfos[i];
+                    if (deviceInfo.kind === 'video' && deviceInfo.facing === 'environment') {
+                        //constraints = {video: {mandatory: {sourceId: deviceInfo.id, minWidth:640, maxWidth:640, minHeight:480, maxHeight:480}}};
+                        constraints = {video: {mandatory: {sourceId: deviceInfo.id, minWidth:1280, maxWidth:1280, minHeight:720, maxHeight:720}}};
+                        flag = true;
+                    }
+                }
+                if (!flag) {
+                    constraints = {video: true};
+                }
+                arSession.start(constraints);
+            }, function errorCallback(e) {
+                console.log('Rejected!', e);
+            });
+        }
+
+        function sessionStop() {
+            console.log("-- session stop --");
+            window.looping = false;
+            window.ucweb.ARSession.stop();
+        }
+
+        function detectorPause() {
+            var detector = window.detector;
+            if (detector) {
+                console.log("-- detector pause --");
+                detector.pause();
+            }
+        }
+
+        function detectorResume() {
+            var detector = window.detector;
+            if (detector) {
+                console.log("-- detector resume --");
+                detector.resume();
+            }
+        }
+
+        function loop() {
+            var frames = arSession.getCurrentFrames();
+            if (window.ucweb.ARSession.isDirty) {
+                if (window.renderFrame) {
+                    window.renderFrame(frames);
+                } else {
+                    console.log("no render method implementation!");
+                }
+            }
+            if (window.looping) {
+                requestAnimationFrame(loop);
+            }
+        }
+
+        function doRender() {
+            requestAnimationFrame(loop);
+        }
+
+        // this will be call when this page start
+        function init(setupRender, renderFrame) {
+            var detector;
+
+            function detectorResult(e) {
+                var result = JSON.parse(e);
+                var dr = document.getElementById('dr');
+                var content = JSON.stringify(result)
+
+                dr.innerHTML="detect result is: " + content;
+            }
+
+            function initResult(e) {
+                var debug1 = document.getElementById('debug1');
+                debug1.innerHTML="init result is: " + e;
+                console.log("EVENT_DETECTOR_INIT_RESULT");
+            }
+
+            sessionStart();
+            arSession.addEventListener(EVENT_DETECT_RESULT, detectorResult);
+            arSession.addEventListener(EVENT_DETECTOR_INIT_RESULT, initResult);
+            arSession.addEventListener(EVENT_SESSION_FAIL, function (e) {
+                console.log("EVENT_SESSION_FAIL");
+            });
+            arSession.addEventListener(EVENT_SESSION_STOP, function (e) {
+                console.log("EVENT_SESSION_STOP");
+            });
+            arSession.addEventListener(EVENT_SESSION_START, function (e) {
+                var debug = document.getElementById('debug');
+                debug.innerHTML="session result is: success";
+                console.log("EVENT_SESSION_START");
+                detector = arSession.setDetector("FaceDetector");
+                detector.setMarkers(["0"]);
+                window.detector = detector;
+                if (!window.renderFrame) {
+                    window.renderFrame = renderFrame;
+                    setupRender();
+                }
+                window.looping = true;
+                doRender();
+            });
+        }
+    </script>
+    <style>
+        canvas {
+            border: 1px solid red;
+            width: 300px;
+            height: 300px;
+            margin-top: 40px;
+        }
+
+        button {
+            width: 300px;
+            height: 20px;
+        }
+
+        p {
+            width: 300px;
+        }
+    </style>
+</head>
+<body>
+<button onclick="sessionStart()">START</button>
+<button onclick="sessionStop()">STOP</button>
+<button onclick="detectorPause()">PAUSE</button>
+<button onclick="detectorResume()">RESUME</button>
+<div id="videoSourceSelect"></div>
+<video autoplay></video>
+<canvas id="gl-cvs" width="600" height="600"></canvas>
+<p class="fps"></p>
+
+<p id="dr">detectResult</p>
+<p id="debug">debug</p>
+<p id="debug1">init result</p>
+<script src="js/webar.js"></script>
+</body>
+</html>
